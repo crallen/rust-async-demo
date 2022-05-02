@@ -4,7 +4,7 @@ use futures::future::join_all;
 use rand::prelude::*;
 use tokio::{time::sleep, sync::watch::{self, Receiver}, select, signal};
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 enum Command {
     Stop,
 }
@@ -25,7 +25,7 @@ async fn main() {
                 done = true;
             },
             _ = signal::ctrl_c() => {
-                _ = tx.send(Command::Stop);
+                tx.send(Command::Stop).expect("unable to send command to channel");
             }
         }
     }
